@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import PortfolioGallery from "@/components/PortfolioGallery";
@@ -9,7 +10,15 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return { title: tailor ? `${tailor.shopName} — TailorG` : "Tailor not found — TailorG" };
 }
 
-export default async function TailorProfilePage({ params }: { params: Promise<{ id: string }> }) {
+export default function TailorProfilePage({ params }: { params: Promise<{ id: string }> }) {
+  return (
+    <Suspense fallback={<p className="mx-auto max-w-6xl px-4 py-10">Loading tailor profile…</p>}>
+      <TailorProfileContent params={params} />
+    </Suspense>
+  );
+}
+
+async function TailorProfileContent({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const tailor = getTailor(id);
   if (!tailor) notFound();
@@ -27,7 +36,7 @@ export default async function TailorProfilePage({ params }: { params: Promise<{ 
         <div className="space-y-10">
           <header>
             <div
-              className="h-48 rounded-2xl bg-gradient-to-br from-primary to-accent mb-6"
+              className="mb-6 h-48 rounded-2xl bg-linear-to-br from-primary to-accent"
               aria-hidden="true"
             />
             <h1 className="font-display text-3xl md:text-4xl font-bold text-primary">{tailor.shopName}</h1>

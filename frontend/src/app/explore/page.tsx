@@ -1,8 +1,21 @@
+import { Suspense } from "react";
 import ExploreClient from "@/components/ExploreClient";
 
 export const metadata = { title: "Explore Tailors — TailorG" };
 
-export default async function ExplorePage({
+export default function ExplorePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; category?: string }>;
+}) {
+  return (
+    <Suspense fallback={<p className="mx-auto max-w-6xl px-4 py-10">Loading tailors…</p>}>
+      <ExploreContent searchParams={searchParams} />
+    </Suspense>
+  );
+}
+
+async function ExploreContent({
   searchParams,
 }: {
   searchParams: Promise<{ q?: string; category?: string }>;

@@ -1,10 +1,19 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import TailorCard from "@/components/TailorCard";
 import { categories } from "@/lib/sample-data";
 import { searchTailors } from "@/lib/tailors";
 
-export default async function CategoryResultsPage({ params }: { params: Promise<{ slug: string }> }) {
+export default function CategoryResultsPage({ params }: { params: Promise<{ slug: string }> }) {
+  return (
+    <Suspense fallback={<p className="mx-auto max-w-6xl px-4 py-10">Loading category…</p>}>
+      <CategoryResultsContent params={params} />
+    </Suspense>
+  );
+}
+
+async function CategoryResultsContent({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const category = categories.find((c) => c.slug === slug);
   if (!category) notFound();
