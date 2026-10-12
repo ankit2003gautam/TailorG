@@ -1,7 +1,7 @@
 import Link from "next/link";
-import type { Tailor } from "@/types/tailor";
+import type { TailorWithDistance } from "@/lib/tailors";
 
-export default function TailorCard({ tailor }: { tailor: Tailor }) {
+export default function TailorCard({ tailor }: { tailor: TailorWithDistance }) {
   const initials = tailor.shopName
     .split(" ")
     .filter((w) => /^[A-Za-z]/.test(w))
@@ -19,7 +19,10 @@ export default function TailorCard({ tailor }: { tailor: Tailor }) {
       </div>
       <div className="p-4 space-y-2">
         <h3 className="font-semibold text-lg">{tailor.shopName}</h3>
-        <p className="text-sm text-charcoal/70">{tailor.area}</p>
+        <p className="text-sm text-charcoal/70">
+          {tailor.area}
+          {tailor.distanceKm !== undefined && <> · {tailor.distanceKm.toFixed(1)} km away</>}
+        </p>
         <p className="text-sm">
           <span aria-hidden="true">★</span> {tailor.rating}{" "}
           <span className="text-charcoal/60">({tailor.reviewCount} reviews)</span>
@@ -28,9 +31,14 @@ export default function TailorCard({ tailor }: { tailor: Tailor }) {
           {tailor.specialisations.map((s) => (
             <li key={s} className="text-xs rounded-full bg-cream px-3 py-1">{s}</li>
           ))}
+          {tailor.homeMeasurement && (
+            <li className="text-xs rounded-full bg-accent/25 px-3 py-1">Home measurement</li>
+          )}
         </ul>
         <div className="flex items-center justify-between pt-2">
-          <p className="text-sm">From <strong>₹{tailor.startingPrice}</strong> <span className="text-charcoal/60">(est.)</span></p>
+          <p className="text-sm">
+            From <strong>₹{tailor.startingPrice}</strong> <span className="text-charcoal/60">(est.)</span>
+          </p>
           <Link href={`/tailors/${tailor.id}`} className="text-sm font-medium text-primary hover:underline">
             View profile
           </Link>
